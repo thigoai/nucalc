@@ -5,6 +5,8 @@
 
 int main() {
     printf("Isolando as raizes...\n");
+    
+    tabelar_raizes(-10, 10, 1, F1);
     struct Raizes r = isolar_raizes(-10, 10, 1, F1); 
     
     printf("Raizes isoladas:\n");
