@@ -1,4 +1,4 @@
-#include "newton.h"
+#include "../include/newton.h"
 
 #include <stdio.h>
 #include <stdlib.h>

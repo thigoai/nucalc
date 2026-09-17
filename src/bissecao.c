@@ -1,4 +1,4 @@
-#include "bissecao.h"
+#include "../include/bissecao.h"
 
 #include <stdio.h>
 #include <stdlib.h>
