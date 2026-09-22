@@ -152,6 +152,6 @@ RetornoMetodo metodo1(double a, double b, function f, function fi) {
   return (RetornoMetodo){.raiz = x, .iteracoes = iteracoes};
 }
 
-MetodoNumerico metodos[] = {bissecao, newton, ponto_fixo, secante,
-                            falsa_posicao};
+MetodoNumerico metodos[] = {bissecao, newton,        ponto_fixo,
+                            secante,  falsa_posicao, metodo1};
 const int num_metodos = sizeof(metodos) / sizeof(metodos[0]);
