@@ -1,5 +1,5 @@
 #include "../include/raizes.h"
-#include "bissecao.c"
+#include "metodos.c"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -41,14 +41,15 @@ void tabelar_valores(double a, double b, double h, function_type f) {
   printf("---------------------------------\n");
 }
 
-void tabelar_raizes(struct Raizes *r, function_type f, double epsilon) {
+void tabelar_raizes(struct Raizes *r, double epsilon, function_type f,
+                    function_type fi, MetodoNumerico metodo) {
   printf("---------------------------------\n");
   printf("| %-13s | %-13s | %-13s |\n", "a", "b", "raiz");
   printf("---------------------------------\n");
   for (int i = 0; i < r->size; i += 2) {
     double a = r->arr[i];
     double b = r->arr[i + 1];
-    double raiz = bissecao(r->arr[i], r->arr[i + 1], epsilon, f);
+    double raiz = metodo(r->arr[i], r->arr[i + 1], epsilon, f, fi);
 
     printf("| %-13lf | %-13lf | %-13lf |\n", a, b, raiz);
   }

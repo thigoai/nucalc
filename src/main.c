@@ -11,8 +11,7 @@ int main() {
   struct Raizes rs = isolar_raizes(-10, 10, 1, f);
 
   tabelar_valores(-10, 10, 1, f);
-
-  tabelar_raizes(&rs, f, 1e-4);
+  tabelar_raizes(&rs, 1e-4, f, fi, bissecao);
 
   return 0;
 }
