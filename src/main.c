@@ -15,7 +15,9 @@ int main() {
   for (int i = 0; i < num_funcoes; i++) {
     function f = get_function(funcoes[i]);
     function fi = get_fi_function(funcoes[i]);
-    struct Raizes rs = isolar_raizes(-1000, 1000, 1, f);
+    struct Raizes rs = isolar_raizes(-1000, 1000, 0.1, f);
+
+    printf("Funcao %d: encontrou %d raizes\n", i, rs.size / 2);
 
     for (int j = 0; j < num_metodos; j++) {
       MetodoNumerico metodo = metodos[j];
