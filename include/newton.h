@@ -1,8 +1,7 @@
 #ifndef NEWTON_H
 #define NEWTON_H
 
-float df_func(float (*f)(float), float x, float h);
-float newton(float a, float b, float e, float (*f)(float));
-
+double df_func(double (*f)(double), double x, double h);
+double newton(double a, double b, double e, double (*f)(double));
 
 #endif

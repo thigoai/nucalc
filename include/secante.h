@@ -1,6 +1,6 @@
 #ifndef SECANTE_H
 #define SECANTE_H
 
-float secante(float x0, float x1, float e, float (*f)(float));
+double secante(double x0, double x1, double e, double (*f)(double));
 
-#endif 
+#endif

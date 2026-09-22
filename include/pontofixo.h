@@ -1,6 +1,6 @@
 #ifndef PONTOFIXO_H
 #define PONTOFIXO_H
 
-float pontofixo(float a, float b, float e, float (*f)(float));
+double pontofixo(double a, double b, double e, double (*f)(double));
 
 #endif

@@ -1,53 +1,47 @@
 #include "../include/funcoes.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
 
-
-double  f1(double  x) {
-    return 2*pow(x,4) + 4*pow(x,3) + 3*pow(x,2) - 10*x - 15;
+double f1(double x) {
+  return 2 * pow(x, 4) + 4 * pow(x, 3) + 3 * pow(x, 2) - 10 * x - 15;
 }
 
-double  f2(double  x) {
-    return pow(x,5) - 2*pow(x,4) - 9*pow(x,3) + 22*pow(x,2) + 4*x - 24;
+double f2(double x) {
+  return pow(x, 5) - 2 * pow(x, 4) - 9 * pow(x, 3) + 22 * pow(x, 2) + 4 * x -
+         24;
 }
 
-double  f3(double  x) {
-    return 5*pow(x,3) + pow(x,2) - exp(1 - 2*x) + cos(x) + 20;
+double f3(double x) {
+  return 5 * pow(x, 3) + pow(x, 2) - exp(1 - 2 * x) + cos(x) + 20;
 }
 
-double  f4(double  x) {
-    return sin(x)*x + 4;
-}
+double f4(double x) { return sin(x) * x + 4; }
 
-double  fi1(double  x) {
-    return (2*pow(x,4) + 4*pow(x,3) + 3*pow(x,2) - 15) / 10.0;
+double fi1(double x) {
+  return (2 * pow(x, 4) + 4 * pow(x, 3) + 3 * pow(x, 2) - 15) / 10.0;
 }
 
 function_type get_function(Funcao i) {
-    switch (i)
-    {
-    case F1:
-        return f1;
-    case F2:
-        return f2;
-    case F3:
-        return f3;
-    case F4:
-        return f4;
-    }
+  switch (i) {
+  case F1:
+    return f1;
+  case F2:
+    return f2;
+  case F3:
+    return f3;
+  case F4:
+    return f4;
+  }
 }
 
 function_type get_fi_function(Funcao i) {
-    switch (i)
-    {
-    case F1:
-        return fi1;
-    case F2:
-        return fi1;
-    case F3:
-        return fi1;
-    case F4:
-        return fi1;
-    }
+  switch (i) {
+  case F1:
+    return fi1;
+  case F2:
+    return fi1;
+  case F3:
+    return fi1;
+  case F4:
+    return fi1;
+  }
 }

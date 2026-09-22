@@ -1,17 +1,15 @@
 #include "../include/secante.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
 
-float secante(float x0, float x1, float e, float (*f)(float)) {
-    float x2;
+double secante(double a, double b, double e, double (*f)(double)) {
+  double x2;
 
-    while (fabs(f(x1)) > e) {
-        x2 = x1 - (f(x1) * (x1 - x0)) / (f(x1) - f(x0));
-        
-        x0 = x1; 
-        x1 = x2; 
-    }
-    
-    return x1;
+  while (fabs(f(b)) > e) {
+    x2 = b - (f(b) * (b - a)) / (f(b) - f(a));
+
+    a = b;
+    b = x2;
+  }
+
+  return b;
 }

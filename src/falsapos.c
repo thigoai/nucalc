@@ -1,22 +1,20 @@
-#include "falsapos.h"
+#include "../include/falsapos.h"
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <math.h>
 
-float falsapos(float a, float b, float e, float (*f)(float)) {
+double falsapos(double a, double b, double e, double (*f)(double)) {
 
-    float x = (a*f(b) - b*f(a))/(f(b) - f(a));
+  double x = (a * f(b) - b * f(a)) / (f(b) - f(a));
 
-    while (fabs(f(x)) > e) {
-        if(f(a) * f(x) < 0) {
-            b = x;
-        } else {
-            a = x;
-        }
-
-        x = (a*f(b) - b*f(a))/(f(b) - f(a));
+  while (fabs(f(x)) > e) {
+    if (f(a) * f(x) < 0) {
+      b = x;
+    } else {
+      a = x;
     }
 
-    return x;
+    x = (a * f(b) - b * f(a)) / (f(b) - f(a));
+  }
+
+  return x;
 }

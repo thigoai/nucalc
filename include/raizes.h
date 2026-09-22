@@ -3,11 +3,11 @@
 #define RAIZES_H
 
 struct Raizes {
-	float* arr;
-	int size;
+  double *arr;
+  int size;
 };
 
-struct Raizes isolar_raizes(float a, float b, float h, function_type f);
-void tabelar_raizes(float a, float b, float h, function_type f);
+struct Raizes isolar_raizes(double a, double b, double h, function_type f);
+void tabelar_raizes(double a, double b, double h, function_type f);
 
 #endif
