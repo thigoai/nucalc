@@ -45,3 +45,6 @@ function get_fi_function(Funcao i) {
     return fi1;
   }
 }
+
+const Funcao funcoes[] = {F1, F2, F3, F4};
+const int num_funcoes = 4;
