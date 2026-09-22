@@ -2,66 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// struct Raizes {
-// 	double* arr;
-// 	int size;
-// };
-
-// struct ponto{
-// 	double x;
-// 	double fx;
-// };
-
-// struct Resultados{
-// 	struct ponto* arr;
-// 	int size;
-// };
-
-// struct Resultados calcular_resultados(double a, double b, double h, Funcao
-// f){
-
-// 	struct ponto* calc = malloc(sizeof(double) * 100);
-// 	int size = 0;
-// 	double curr = a;
-
-// 	while (curr < b) {
-// 		if (func(curr, f) * func(curr + h, f) < 0) {
-// 			calc[size].x = curr;
-// 			calc[size].fx = func(curr, f);
-// 		}
-
-// 		curr += h;
-// 	}
-
-// 	struct Resultados r;
-// 	r.arr = calc;
-// 	r.size = size;
-
-// 	return r;
-// }
-
-// struct Raizes isolar_raizes(struct Resultados resultados){
-//     double* raizes = malloc(sizeof(double) * 100);
-//     int size = 0;
-
-//     for (int i = 0; i < resultados.size - 1; i++){
-
-//         if (resultados.arr[i].fx * resultados.arr[i+1].fx < 0) {
-
-//             raizes[size] = resultados.arr[i].x;
-//             raizes[size + 1] = resultados.arr[i+1].x;
-
-//             size += 2;
-//         }
-//     }
-
-//     struct Raizes r;
-//     r.arr = raizes;
-//     r.size = size;
-
-//     return r;
-// }
-
 struct Raizes isolar_raizes(double a, double b, double h, function_type f) {
 
   double *raizes = malloc(sizeof(double) * 100);
