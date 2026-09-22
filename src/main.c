@@ -1,20 +1,22 @@
 #include <stdio.h>
-#include "funcoes.c" 
+#include <math.h>
+#include "bissecao.c"
+#include "funcoes.c"
 #include "raizes.c"  
-#include "newton.c"
+
 
 int main() {
     printf("Isolando as raizes...\n");
     
-    tabelar_raizes(-10, 10, 1, F1);
-    struct Raizes r = isolar_raizes(-10, 10, 1, F1); 
-    
-    printf("Raizes isoladas:\n");
-    for (int i = 0; i < r.size; i+= 2) {
-        printf("lower: %f, upper: %f\n", r.arr[i], r.arr[i+1]);
-    }
-    
-    free(r.arr); 
+    function_type f = get_function(F1);
+    function_type fi = get_fi_function(F1);
+
+    double  lower = 3;
+    double  upper = 4;
+    printf("lower: %f, upper: %f\n", lower, upper);
+	double  k = bissecao(lower, upper, 1e-3, f);
+
+
     
     return 0;
 }

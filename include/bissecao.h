@@ -1,6 +1,6 @@
 #ifndef BISSECAO_H
 #define BISSECAO_H
 
-float bissecao(float a, float b, float e, float (*f)(float));
+double  bissecao(double  a, double  b, double  e, double  (*f)(double ));
 
 #endif

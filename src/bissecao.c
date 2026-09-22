@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-float bissecao(float a, float b, float e, float (*f)(float)) {
-    float x = a + ((b - a) / 2);
+double  bissecao(double a, double  b, double  e, double  (*f)(double )) {
+    double  x = a + ((b - a) / 2);
 
     while (fabs(f(x)) > e) {
         if(f(a) * f(x) < 0) {

@@ -1,16 +1,14 @@
 #ifndef FUNCOES_H
 #define FUNCOES_H
 
+typedef double  (*function_type)(double );
+
 typedef enum{
     F1, F2, F3, F4
 }Funcao;
 
-typedef enum{
-    Fi1, Fi2, Fi3, Fi4
-}FuncaoFI;
+function_type func(Funcao i);
 
-float func(float x, Funcao i);
-
-float fi_func(float x, FuncaoFI i);
+function_type fi_func(Funcao i);
 
 #endif

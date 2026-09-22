@@ -62,14 +62,14 @@
 //     return r;
 // }
 
-struct Raizes isolar_raizes(float a, float b, float h, Funcao f) {
+struct Raizes isolar_raizes(float a, float b, float h, function_type f) {
 
 	float* raizes = malloc(sizeof(float) * 100);
 	int size = 0;
 	float curr = a;
 
 	while (curr < b) {
-		if (func(curr, f) * func(curr + h, f) < 0) {
+		if (f(curr) * f(curr + h) < 0) {
 			raizes[size] = curr;
 			raizes[size + 1] = curr + h;
 			size+= 2;
@@ -85,16 +85,16 @@ struct Raizes isolar_raizes(float a, float b, float h, Funcao f) {
 	return r;
 }
 
-void tabelar_raizes(float a, float b, float h, Funcao f) {
+void tabelar_raizes(float a, float b, float h, function_type f) {
 
     printf("---------------------------------\n");
-    printf("| %-13s | %-13s |\n", "x", "f(x)");
+    printf("| %-13s | %-13s |\n", "x", "f(x), fi_func");
     printf("---------------------------------\n");
 
     float curr = a;
 
     while (curr <= b) {
-        printf("| %-13.4f | %-13.4f |\n", curr, func(curr, f));
+        printf("| %-13.4f | %-13.4f |\n", curr, f(curr));
         curr += h;
     }
     
