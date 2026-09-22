@@ -1,4 +1,3 @@
-#include "bissecao.c"
 #include "funcoes.c"
 #include "raizes.c"
 #include <stdio.h>
@@ -9,10 +8,11 @@ int main() {
   function_type f = get_function(F1);
   function_type fi = get_fi_function(F1);
 
-  double lower = 3;
-  double upper = 4;
-  printf("lower: %f, upper: %f\n", lower, upper);
-  double k = bissecao(lower, upper, 1e-3, f);
+  struct Raizes rs = isolar_raizes(-10, 10, 1, f);
+
+  tabelar_valores(-10, 10, 1, f);
+
+  tabelar_raizes(&rs, f, 1e-4);
 
   return 0;
 }

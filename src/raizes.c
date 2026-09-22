@@ -1,4 +1,5 @@
 #include "../include/raizes.h"
+#include "bissecao.c"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -25,8 +26,7 @@ struct Raizes isolar_raizes(double a, double b, double h, function_type f) {
   return r;
 }
 
-void tabelar_raizes(double a, double b, double h, function_type f) {
-
+void tabelar_valores(double a, double b, double h, function_type f) {
   printf("---------------------------------\n");
   printf("| %-13s | %-13s |\n", "x", "f(x), fi_func");
   printf("---------------------------------\n");
@@ -38,5 +38,19 @@ void tabelar_raizes(double a, double b, double h, function_type f) {
     curr += h;
   }
 
+  printf("---------------------------------\n");
+}
+
+void tabelar_raizes(struct Raizes *r, function_type f, double epsilon) {
+  printf("---------------------------------\n");
+  printf("| %-13s | %-13s | %-13s |\n", "a", "b", "raiz");
+  printf("---------------------------------\n");
+  for (int i = 0; i < r->size; i += 2) {
+    double a = r->arr[i];
+    double b = r->arr[i + 1];
+    double raiz = bissecao(r->arr[i], r->arr[i + 1], epsilon, f);
+
+    printf("| %-13lf | %-13lf | %-13lf |\n", a, b, raiz);
+  }
   printf("---------------------------------\n");
 }

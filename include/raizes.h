@@ -8,6 +8,8 @@ struct Raizes {
 };
 
 struct Raizes isolar_raizes(double a, double b, double h, function_type f);
-void tabelar_raizes(double a, double b, double h, function_type f);
+
+void tabelar_valores(double a, double b, double h, function_type f);
+void tabelar_raizes(struct Raizes *r, function_type f, double epsilon);
 
 #endif
