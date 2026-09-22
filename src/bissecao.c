@@ -7,7 +7,6 @@
  * 
  * O método divide o intervalo [a, b] ao meio iterativamente até que 
  * o valor absoluto da função no ponto médio seja menor que a tolerância (e).
- * Pressupõe que a raiz está contida no intervalo, ou seja, f(a) e f(b) possuem sinais opostos.
  * 
  * @param a Limite esquerdo do intervalo analisado.
  * @param b Limite direito do intervalo analisado.
