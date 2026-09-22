@@ -2,11 +2,12 @@
 
 #include <math.h>
 
-double bissecao(double a, double b, double e, double (*f)(double),
-                double (*fi)(double)) {
+const double EPSILON = 1e-6;
+
+double bissecao(double a, double b, function f, function fi) {
   double x = a + ((b - a) / 2);
 
-  while (fabs(f(x)) > e) {
+  while (fabs(f(x)) > EPSILON) {
     if (f(a) * f(x) < 0) {
       b = x;
     } else {
@@ -19,11 +20,10 @@ double bissecao(double a, double b, double e, double (*f)(double),
   return x;
 }
 
-double falsa_posicao(double a, double b, double e, double (*f)(double),
-                     double (*fi)(double)) {
+double falsa_posicao(double a, double b, function f, function fi) {
   double x = (a * f(b) - b * f(a)) / (f(b) - f(a));
 
-  while (fabs(f(x)) > e) {
+  while (fabs(f(x)) > EPSILON) {
     if (f(a) * f(x) < 0) {
       b = x;
     } else {
@@ -36,11 +36,10 @@ double falsa_posicao(double a, double b, double e, double (*f)(double),
   return x;
 }
 
-double ponto_fixo(double a, double b, double e, double (*f)(double),
-                  double (*fi)(double)) {
+double ponto_fixo(double a, double b, function f, function fi) {
   double x = fi((b - a) / 2);
 
-  while (fabs(f(x)) > e) {
+  while (fabs(f(x)) > EPSILON) {
     if (f(a) * f(x) < 0) {
       b = x;
     } else {
@@ -53,32 +52,28 @@ double ponto_fixo(double a, double b, double e, double (*f)(double),
   return x;
 }
 
-double df_func(double (*f)(double), double x, double h) {
-  return (f(x) + f(x + h)) / h;
-}
+double df(function f, double x) { return (f(x) + f(x + EPSILON)) / EPSILON; }
 
-double newton(double a, double b, double e, double (*f)(double),
-              double (*fi)(double)) {
+double newton(double a, double b, function f, function fi) {
   double x = a + ((b - a) / 2);
 
-  while (fabs(f(x)) > e) {
+  while (fabs(f(x)) > EPSILON) {
     if (f(a) * f(x) < 0) {
       b = x;
     } else {
       a = x;
     }
 
-    x = x - (f(x) / df_func(f, x, e));
+    x = x - (f(x) / df(f, x));
   }
 
   return x;
 }
 
-double secante(double a, double b, double e, double (*f)(double),
-               double (*fi)(double)) {
+double secante(double a, double b, function f, function fi) {
   double x2;
 
-  while (fabs(f(b)) > e) {
+  while (fabs(f(b)) > EPSILON) {
     x2 = b - (f(b) * (b - a)) / (f(b) - f(a));
 
     a = b;
@@ -91,9 +86,7 @@ double secante(double a, double b, double e, double (*f)(double),
 // Consiste em inicialmente utilizar o método do ponto fixo por alguams
 // iterações para reduzir o intervalo Em seguida, utiliza-se o método da
 // bisseção para uma convergência garantida até o epsilon
-double metodo1(double a, double b, double e, double (*f)(double),
-               double (*fi)(double)) {
-
+double metodo1(double a, double b, function f, function fi) {
   // Método do ponto fixo com 3 iterações
   // O que reduz o intervalo em 87,5%
   for (int i = 0; i < 3; i++) {
@@ -123,7 +116,7 @@ double metodo1(double a, double b, double e, double (*f)(double),
       a = x;
     }
 
-    if (fabs(f(x)) <= e) {
+    if (fabs(f(x)) <= EPSILON) {
       return x;
     }
   }
@@ -131,7 +124,7 @@ double metodo1(double a, double b, double e, double (*f)(double),
   // Aqui é apenas o algoritmo da bisseção, visto em sala
   double x = a + (b - a) / 2.0f;
 
-  while (fabs(f(x)) > e) {
+  while (fabs(f(x)) > EPSILON) {
     if (f(a) * f(x) < 0) {
       b = x;
     } else {

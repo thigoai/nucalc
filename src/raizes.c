@@ -3,8 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct Raizes isolar_raizes(double a, double b, double h, function_type f) {
-
+struct Raizes isolar_raizes(double a, double b, double h, function f) {
   double *raizes = malloc(sizeof(double) * 100);
   int size = 0;
   double curr = a;
@@ -26,7 +25,7 @@ struct Raizes isolar_raizes(double a, double b, double h, function_type f) {
   return r;
 }
 
-void tabelar_valores(double a, double b, double h, function_type f) {
+void tabelar_valores(double a, double b, double h, function f) {
   printf("---------------------------------\n");
   printf("| %-13s | %-13s |\n", "x", "f(x)");
   printf("---------------------------------\n");
@@ -41,15 +40,15 @@ void tabelar_valores(double a, double b, double h, function_type f) {
   printf("---------------------------------\n");
 }
 
-void tabelar_raizes(struct Raizes *r, double epsilon, function_type f,
-                    function_type fi, MetodoNumerico metodo) {
+void tabelar_raizes(struct Raizes *r, function f, function fi,
+                    MetodoNumerico metodo) {
   printf("---------------------------------\n");
   printf("| %-13s | %-13s | %-13s |\n", "a", "b", "raiz");
   printf("---------------------------------\n");
   for (int i = 0; i < r->size; i += 2) {
     double a = r->arr[i];
     double b = r->arr[i + 1];
-    double raiz = metodo(r->arr[i], r->arr[i + 1], epsilon, f, fi);
+    double raiz = (*metodo)(r->arr[i], r->arr[i + 1], f, fi);
 
     printf("| %-13lf | %-13lf | %-13lf |\n", a, b, raiz);
   }

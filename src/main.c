@@ -5,8 +5,8 @@
 int main() {
   printf("Isolando as raizes...\n");
 
-  function_type f = get_function(F1);
-  function_type fi = get_fi_function(F1);
+  function f = get_function(F1);
+  function fi = get_fi_function(F1);
 
   struct Raizes rs = isolar_raizes(-10, 10, 1, f);
 

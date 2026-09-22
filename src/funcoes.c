@@ -20,7 +20,7 @@ double fi1(double x) {
   return (2 * pow(x, 4) + 4 * pow(x, 3) + 3 * pow(x, 2) - 15) / 10.0;
 }
 
-function_type get_function(Funcao i) {
+function get_function(Funcao i) {
   switch (i) {
   case F1:
     return f1;
@@ -33,7 +33,7 @@ function_type get_function(Funcao i) {
   }
 }
 
-function_type get_fi_function(Funcao i) {
+function get_fi_function(Funcao i) {
   switch (i) {
   case F1:
     return fi1;
