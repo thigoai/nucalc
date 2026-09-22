@@ -28,7 +28,7 @@ struct Raizes isolar_raizes(double a, double b, double h, function_type f) {
 
 void tabelar_valores(double a, double b, double h, function_type f) {
   printf("---------------------------------\n");
-  printf("| %-13s | %-13s |\n", "x", "f(x), fi_func");
+  printf("| %-13s | %-13s |\n", "x", "f(x)");
   printf("---------------------------------\n");
 
   double curr = a;
