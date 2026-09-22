@@ -5,19 +5,25 @@
 
 extern const double EPSILON;
 
-typedef double (*MetodoNumerico)(double a, double b, function f, function fi);
+typedef struct {
+  int iteracoes;
+  double raiz;
+} RetornoMetodo;
 
-double bissecao(double a, double b, function f, function fi);
-double falsa_posicao(double a, double b, function f, function f1);
-double ponto_fixo(double a, double b, function f, function fi);
-double newton(double a, double b, function f, function fi);
-double secante(double a, double b, function f, function fi);
+typedef RetornoMetodo (*MetodoNumerico)(double a, double b, function f,
+                                        function fi);
+
+RetornoMetodo bissecao(double a, double b, function f, function fi);
+RetornoMetodo falsa_posicao(double a, double b, function f, function f1);
+RetornoMetodo ponto_fixo(double a, double b, function f, function fi);
+RetornoMetodo newton(double a, double b, function f, function fi);
+RetornoMetodo secante(double a, double b, function f, function fi);
 // Consiste em inicialmente inicialmente utilizar o método do ponto fixo, apenas
 // para reduzir o intervalo Em seguida, utiliza o método da bisseção para uma
 // convergência garantida
-double metodo1(double a, double b, function f, function fi);
+RetornoMetodo metodo1(double a, double b, function f, function fi);
 
-double df_func(double (*f)(double), double x);
+double df(double (*f)(double), double x);
 
 extern MetodoNumerico metodos[];
 extern const int num_metodos;

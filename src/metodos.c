@@ -3,11 +3,14 @@
 #include <math.h>
 
 const double EPSILON = 1e-6;
+const int MAX_ITER = 10000;
 
-double bissecao(double a, double b, function f, function fi) {
+RetornoMetodo bissecao(double a, double b, function f, function fi) {
+  int iteracoes = 0;
   double x = a + ((b - a) / 2);
 
-  while (fabs(f(x)) > EPSILON) {
+  while (fabs(f(x)) > EPSILON && iteracoes < MAX_ITER) {
+    iteracoes++;
     if (f(a) * f(x) < 0) {
       b = x;
     } else {
@@ -17,13 +20,15 @@ double bissecao(double a, double b, function f, function fi) {
     x = a + ((b - a) / 2);
   }
 
-  return x;
+  return (RetornoMetodo){.raiz = x, .iteracoes = iteracoes};
 }
 
-double falsa_posicao(double a, double b, function f, function fi) {
+RetornoMetodo falsa_posicao(double a, double b, function f, function fi) {
   double x = (a * f(b) - b * f(a)) / (f(b) - f(a));
+  int iteracoes = 0;
 
-  while (fabs(f(x)) > EPSILON) {
+  while (fabs(f(x)) > EPSILON && iteracoes < MAX_ITER) {
+    iteracoes++;
     if (f(a) * f(x) < 0) {
       b = x;
     } else {
@@ -33,13 +38,15 @@ double falsa_posicao(double a, double b, function f, function fi) {
     x = (a * f(b) - b * f(a)) / (f(b) - f(a));
   }
 
-  return x;
+  return (RetornoMetodo){.raiz = x, .iteracoes = iteracoes};
 }
 
-double ponto_fixo(double a, double b, function f, function fi) {
+RetornoMetodo ponto_fixo(double a, double b, function f, function fi) {
   double x = fi((b - a) / 2);
+  int iteracoes = 0;
 
-  while (fabs(f(x)) > EPSILON) {
+  while (fabs(f(x)) > EPSILON && iteracoes < MAX_ITER) {
+    iteracoes++;
     if (f(a) * f(x) < 0) {
       b = x;
     } else {
@@ -49,15 +56,17 @@ double ponto_fixo(double a, double b, function f, function fi) {
     x = fi(x);
   }
 
-  return x;
+  return (RetornoMetodo){.raiz = x, .iteracoes = iteracoes};
 }
 
-double df(function f, double x) { return (f(x) + f(x + EPSILON)) / EPSILON; }
+double df(function f, double x) { return (f(x + EPSILON) - f(x)) / EPSILON; }
 
-double newton(double a, double b, function f, function fi) {
+RetornoMetodo newton(double a, double b, function f, function fi) {
   double x = a + ((b - a) / 2);
+  int iteracoes = 0;
 
-  while (fabs(f(x)) > EPSILON) {
+  while (fabs(f(x)) > EPSILON && iteracoes < MAX_ITER) {
+    iteracoes++;
     if (f(a) * f(x) < 0) {
       b = x;
     } else {
@@ -67,29 +76,34 @@ double newton(double a, double b, function f, function fi) {
     x = x - (f(x) / df(f, x));
   }
 
-  return x;
+  return (RetornoMetodo){.raiz = x, .iteracoes = iteracoes};
 }
 
-double secante(double a, double b, function f, function fi) {
+RetornoMetodo secante(double a, double b, function f, function fi) {
+  int iteracoes = 0;
   double x2;
 
-  while (fabs(f(b)) > EPSILON) {
+  while (fabs(f(b)) > EPSILON && iteracoes < MAX_ITER) {
+    iteracoes++;
     x2 = b - (f(b) * (b - a)) / (f(b) - f(a));
 
     a = b;
     b = x2;
   }
 
-  return b;
+  return (RetornoMetodo){.raiz = b, .iteracoes = iteracoes};
 }
 
 // Consiste em inicialmente utilizar o método do ponto fixo por alguams
 // iterações para reduzir o intervalo Em seguida, utiliza-se o método da
 // bisseção para uma convergência garantida até o epsilon
-double metodo1(double a, double b, function f, function fi) {
+RetornoMetodo metodo1(double a, double b, function f, function fi) {
+  int iteracoes = 0;
+
   // Método do ponto fixo com 3 iterações
   // O que reduz o intervalo em 87,5%
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 3; i++, iteracoes++) {
+
     double meio = a + (b - a) / 2.0f;
     double candidato = fi(meio);
 
@@ -117,14 +131,15 @@ double metodo1(double a, double b, function f, function fi) {
     }
 
     if (fabs(f(x)) <= EPSILON) {
-      return x;
+      return (RetornoMetodo){.raiz = x, .iteracoes = iteracoes};
     }
   }
 
   // Aqui é apenas o algoritmo da bisseção, visto em sala
   double x = a + (b - a) / 2.0f;
 
-  while (fabs(f(x)) > EPSILON) {
+  while (fabs(f(x)) > EPSILON && iteracoes < MAX_ITER) {
+    iteracoes++;
     if (f(a) * f(x) < 0) {
       b = x;
     } else {
@@ -134,7 +149,7 @@ double metodo1(double a, double b, function f, function fi) {
     x = a + (b - a) / 2.0f;
   }
 
-  return x;
+  return (RetornoMetodo){.raiz = x, .iteracoes = iteracoes};
 }
 
 MetodoNumerico metodos[] = {bissecao, newton, ponto_fixo, secante,
