@@ -14,7 +14,7 @@
  * @return O valor aproximado da derivada da função no ponto x.
  */
 double df_func(double (*f)(double), double x, double h) {
-  return (f(x) + f(x + h)) / h;
+  return (f(x + h) - f(x)) / h;
 }
 
 /**
