@@ -48,9 +48,10 @@ void tabelar_raizes(struct Raizes *r, function f, function fi,
   for (int i = 0; i < r->size; i += 2) {
     double a = r->arr[i];
     double b = r->arr[i + 1];
-    double raiz = (*metodo)(r->arr[i], r->arr[i + 1], f, fi);
+    RetornoMetodo retorno = (*metodo)(r->arr[i], r->arr[i + 1], f, fi);
 
-    printf("| %-13lf | %-13lf | %-13lf |\n", a, b, raiz);
+    printf("| %-13lf | %-13lf | %-13lf | %-13d |\n", a, b, retorno.raiz,
+           retorno.iteracoes);
   }
   printf("---------------------------------\n");
 }
