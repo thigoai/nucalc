@@ -20,6 +20,12 @@ double fi1(double x) {
   return (2 * pow(x, 4) + 4 * pow(x, 3) + 3 * pow(x, 2) - 15) / 10.0;
 }
 
+double fi2(double x) { return x - 0.02 * f2(x); }
+
+double fi3(double x) { return x - 0.01 * f3(x); }
+
+double fi4(double x) { return x - 0.1 * f4(x); }
+
 function get_function(Funcao i) {
   switch (i) {
   case F1:
@@ -38,11 +44,11 @@ function get_fi_function(Funcao i) {
   case F1:
     return fi1;
   case F2:
-    return fi1;
+    return fi2;
   case F3:
-    return fi1;
+    return fi3;
   case F4:
-    return fi1;
+    return fi4;
   }
 }
 
