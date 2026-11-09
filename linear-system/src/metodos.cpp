@@ -1,21 +1,47 @@
+#include "./mecanismos.cpp"
 #include <stdexcept>
-#include <vector>
 
-using Matriz = std::vector<std::vector<double>>;
-using Vetor = std::vector<double>;
+Resultado gauss_elim(Matriz &A, Vetor &b) {
+  size_t n = b.size();
+  size_t count = 0;
 
-constexpr double TOLERANCIA = 1e-6;
-constexpr int MAX_ITERACOES = 10000;
+  for (size_t i = 0; i < n - 1; i++) {
+    double pivo = A[i][i];
 
-struct Resultado {
-  Vetor x;
-  int iteracoes = 0;
-};
+    size_t p = i;
 
-Resultado gauss_elim(const Matriz &A, const Vetor &b) {
-  (void)A;
-  (void)b;
-  throw std::runtime_error("gauss_elim nao implementado");
+    for (size_t k = i + 1; k < n; k++) {
+      if (std::fabs(A[k][i]) > std::fabs(A[p][i])) {
+        p = k;
+      }
+    }
+
+    if (p != i) {
+      std::swap(A[i], A[p]);
+      std::swap(b[i], b[p]);
+    }
+
+    if (A[i][i] == 0.0) {
+      throw std::runtime_error("Impossível de continuar, diagonal zerada.");
+    }
+
+    for (int j = i + 1; j < n; j++) {
+      double multiplicador = A[j][i] / pivo;
+
+      auto line_update = [&multiplicador](double to, double from) {
+        return to - from * multiplicador;
+      };
+
+      apply(A, b, i, j, count, line_update);
+    }
+  }
+
+  Vetor x = retrosubstituicao(A, b, count);
+
+  return Resultado{
+      .x = x,
+      .iteracoes = count,
+  };
 }
 
 Resultado lu_factor(const Matriz &A, const Vetor &b) {
