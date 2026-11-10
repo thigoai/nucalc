@@ -28,9 +28,9 @@ int main(int argc, char **argv) {
 
   try {
     if (metodo == "gauss_elim") {
-      resultado = gauss_elim(A, b);
+      resultado = eliminacao_gauss::metodo(A, b);
     } else if (metodo == "lu_factor") {
-      resultado = lu_factor(A, b);
+      resultado = fatoracao_lu::metodo(A, b);
     } else if (metodo == "gauss_jacobi") {
       resultado = gauss_jacobi(A, b);
     } else if (metodo == "gauss_seidel") {

@@ -1,40 +1,70 @@
 #include "./mecanismos.cpp"
+#include <cstddef>
 #include <stdexcept>
+#include <vector>
 
-Resultado gauss_elim(Matriz &A, Vetor &b) {
+double atualiza_celula(double to, double from, double multiplicador) {
+  return to - from * multiplicador;
+}
+
+// Eliminação de Gauss
+
+namespace eliminacao_gauss {
+
+void pivoteamento(Matriz &A, Vetor &b, size_t i) {
   size_t n = b.size();
-  size_t count = 0;
+
+  double pivo = A[i][i];
+
+  size_t p = i;
+
+  for (size_t k = i + 1; k < n; k++) {
+    if (std::fabs(A[k][i]) > std::fabs(A[p][i])) {
+      p = k;
+    }
+  }
+
+  if (p != i) {
+    std::swap(A[i], A[p]);
+    std::swap(b[i], b[p]);
+  }
+
+  if (A[i][i] == 0.0) {
+    throw std::runtime_error("Impossível de continuar, diagonal zerada.");
+  }
+}
+
+void atualiza_linha(Matriz &A, Vetor &b, size_t from, size_t to, size_t &count,
+                    double multiplicador) {
+  for (size_t i = 0; i < b.size(); i++) {
+    count++;
+    A[to][i] = atualiza_celula(A[to][i], A[from][i], multiplicador);
+  }
+
+  count++;
+  b[to] = atualiza_celula(b[to], b[from], multiplicador);
+}
+
+void escalonamento(Matriz &A, Vetor &b, size_t &count) {
+  size_t n = b.size();
 
   for (size_t i = 0; i < n - 1; i++) {
+    pivoteamento(A, b, i);
     double pivo = A[i][i];
-
-    size_t p = i;
-
-    for (size_t k = i + 1; k < n; k++) {
-      if (std::fabs(A[k][i]) > std::fabs(A[p][i])) {
-        p = k;
-      }
-    }
-
-    if (p != i) {
-      std::swap(A[i], A[p]);
-      std::swap(b[i], b[p]);
-    }
-
-    if (A[i][i] == 0.0) {
-      throw std::runtime_error("Impossível de continuar, diagonal zerada.");
-    }
 
     for (int j = i + 1; j < n; j++) {
       double multiplicador = A[j][i] / pivo;
 
-      auto line_update = [&multiplicador](double to, double from) {
-        return to - from * multiplicador;
-      };
-
-      apply(A, b, i, j, count, line_update);
+      atualiza_linha(A, b, i, j, count, multiplicador);
     }
   }
+}
+
+Resultado metodo(Matriz &A, Vetor &b) {
+  size_t n = b.size();
+  size_t count = 0;
+
+  escalonamento(A, b, count);
 
   Vetor x = retrosubstituicao(A, b, count);
 
@@ -43,12 +73,85 @@ Resultado gauss_elim(Matriz &A, Vetor &b) {
       .iteracoes = count,
   };
 }
+} // namespace eliminacao_gauss
 
-Resultado lu_factor(const Matriz &A, const Vetor &b) {
-  (void)A;
-  (void)b;
-  throw std::runtime_error("lu_factor nao implementado");
+namespace fatoracao_lu {
+
+void pivoteamento(Matriz &U, Matriz &L, Vetor &b, size_t i) {
+  size_t n = b.size();
+
+  size_t p = i;
+
+  for (size_t k = i + 1; k < n; k++) {
+    if (std::fabs(U[k][i]) > std::fabs(U[p][i])) {
+      p = k;
+    }
+  }
+
+  if (p != i) {
+    std::swap(U[i], U[p]);
+
+    // Só alterna o que já foi calculado.
+    for (size_t k = 0; k < i; k++) {
+      std::swap(L[i][k], L[p][k]);
+    }
+    std::swap(b[i], b[p]);
+  }
+
+  if (U[i][i] == 0.0) {
+    throw std::runtime_error("Impossível de continuar, diagonal zerada.");
+  }
 }
+
+void atualiza_linha(Matriz &A, size_t from, size_t to, size_t &count,
+                    double multiplicador) {
+  count += A.size();
+  for (size_t i = 0; i < A.size(); i++) {
+    A[to][i] = atualiza_celula(A[to][i], A[from][i], multiplicador);
+  }
+}
+
+void fatoracao(Matriz &L, Matriz &U, Vetor &b, size_t &count) {
+  size_t n = b.size();
+
+  for (size_t i = 0; i < n - 1; i++) {
+    pivoteamento(U, L, b, i);
+    double pivo = U[i][i];
+    for (int j = i + 1; j < n; j++) {
+      double multiplicador = U[j][i] / pivo;
+
+      L[j][i] = multiplicador;
+
+      atualiza_linha(U, i, j, count, multiplicador);
+    }
+  }
+}
+
+void inicializar_diagonal_de_l(Matriz &L) {
+  size_t n = L.size();
+  for (size_t i = 0; i < n; i++) {
+    L[i][i] = 1.0;
+  }
+}
+
+Resultado metodo(Matriz &U, Vetor &b) {
+  size_t n = b.size();
+  size_t count = 0;
+
+  Matriz L(n, std::vector<double>(n, 0.0));
+  inicializar_diagonal_de_l(L);
+
+  fatoracao(L, U, b, count);
+  Vetor y = prosubstituicao(L, b, count);
+  Vetor x = retrosubstituicao(U, y, count);
+
+  return Resultado{
+      .x = x,
+      .iteracoes = count,
+  };
+}
+
+} // namespace fatoracao_lu
 
 Resultado gauss_jacobi(const Matriz &A, const Vetor &b) {
   (void)A;

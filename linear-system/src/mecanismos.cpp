@@ -24,17 +24,24 @@ Vetor retrosubstituicao(const Matriz &A, const Vetor &b, size_t &count) {
   return x;
 }
 
-void apply(Matriz &A, Vetor &b, size_t from, size_t to, size_t &count,
-           Transform transformation) {
-  for (size_t i = 0; i < b.size(); i++) {
+Vetor prosubstituicao(const Matriz &L, const Vetor &b, size_t &count) {
+  size_t n = b.size();
+  Vetor y(n);
+
+  for (size_t i = 0; i < n; i++) {
+    double soma = 0.0;
+
+    for (size_t j = 0; j < i; j++) {
+      count++;
+      soma += L[i][j] * y[j];
+    }
+
     count++;
-    A[to][i] = transformation(A[to][i], A[from][i]);
+    y[i] = (b[i] - soma) / L[i][i];
   }
 
-  count++;
-  b[to] = transformation(b[to], b[from]);
+  return y;
 }
-
 double calcular_residuo(const Matriz &A, const Vetor &b, const Vetor &x) {
   const int n = static_cast<int>(A.size());
   double maior = 0.0;
