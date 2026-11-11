@@ -72,8 +72,8 @@ bool distancia_relativa(const Vetor &x, const Vetor &xx, double EPSILON) {
 
     double abs_xx = std::abs(xx[i]);
 
-    if (xx[i] > max_xx) {
-      max_xx = xx[i];
+    if (abs_xx > max_xx) {
+      max_xx = abs_xx;
     }
   }
 
@@ -94,4 +94,25 @@ bool distancia_absoluta(const Vetor &x, const Vetor &xx, double EPSILON) {
   }
 
   return max_delta < EPSILON;
+}
+
+bool teste_diagonal(const Matriz &A) {
+  const size_t n = A.size();
+  bool linha_ok = true, coluna_ok = true;
+
+  for (size_t i = 0; i < n; i++) {
+    double soma_linha = 0, soma_coluna = 0;
+    for (size_t j = 0; j < n; j++) {
+      if (i != j) {
+        soma_linha += std::abs(A[i][j]);
+        soma_coluna += std::abs(A[j][i]);
+      }
+    }
+    if (soma_linha >= std::abs(A[i][i]))
+      linha_ok = false;
+    if (soma_coluna >= std::abs(A[i][i]))
+      coluna_ok = false;
+  }
+
+  return linha_ok || coluna_ok;
 }
