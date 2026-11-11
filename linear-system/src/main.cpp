@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
     } else if (metodo == "lu_factor") {
       resultado = fatoracao_lu::metodo(A, b);
     } else if (metodo == "gauss_jacobi") {
-      resultado = gauss_jacobi(A, b);
+      resultado = gauss_jacobi::metodo(A, b);
     } else if (metodo == "gauss_seidel") {
       resultado = gauss_seidel(A, b);
     } else {

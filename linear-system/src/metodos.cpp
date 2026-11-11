@@ -1,13 +1,12 @@
 #include "./mecanismos.cpp"
 #include <cstddef>
+#include <iostream>
 #include <stdexcept>
 #include <vector>
 
 double atualiza_celula(double to, double from, double multiplicador) {
   return to - from * multiplicador;
 }
-
-// Eliminação de Gauss
 
 namespace eliminacao_gauss {
 
@@ -153,11 +152,43 @@ Resultado metodo(Matriz &U, Vetor &b) {
 
 } // namespace fatoracao_lu
 
-Resultado gauss_jacobi(const Matriz &A, const Vetor &b) {
-  (void)A;
-  (void)b;
-  throw std::runtime_error("gauss_jacobi nao implementado");
+namespace gauss_jacobi {
+
+Resultado metodo(const Matriz &A, const Vetor &b) {
+  size_t n = b.size();
+
+  Vetor x = std::vector<double>(n, 0);
+  Vetor y = std::vector<double>(n, 10);
+
+  size_t contador = 0;
+
+  while (true) {
+    contador++;
+
+    for (size_t i = 0; i < n; i++) {
+      y[i] = 0;
+      for (size_t j = 0; j < n; j++) {
+        if (i != j) {
+          y[i] += A[i][j] * x[j];
+        }
+      }
+
+      y[i] = (b[i] - y[i]) / A[i][i];
+    }
+
+    bool convergiu =
+        distancia_relativa(x, y, 1e-6) || distancia_absoluta(x, y, 1e-6);
+
+    x = y;
+
+    if (convergiu) {
+      break;
+    }
+  }
+
+  return Resultado{.x = x, .iteracoes = contador};
 }
+} // namespace gauss_jacobi
 
 Resultado gauss_seidel(const Matriz &A, const Vetor &b) {
   (void)A;
