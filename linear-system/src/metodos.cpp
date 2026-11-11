@@ -190,8 +190,44 @@ Resultado metodo(const Matriz &A, const Vetor &b) {
 }
 } // namespace gauss_jacobi
 
-Resultado gauss_seidel(const Matriz &A, const Vetor &b) {
-  (void)A;
-  (void)b;
-  throw std::runtime_error("gauss_seidel nao implementado");
+namespace gauss_seidel {
+
+Resultado metodo(const Matriz &A, const Vetor &b) {
+  size_t n = b.size();
+
+  Vetor x = std::vector<double>(n, 1);
+  Vetor xx = std::vector<double>(n);
+
+  if (!teste_diagonal(A)) {
+    return Resultado{.x = x, .iteracoes = 0};
+  }
+
+  size_t contador = 0;
+
+  while (true) {
+    contador++;
+
+    Vetor x_old = x;
+
+    for (size_t i = 0; i < n; i++) {
+      double soma = 0;
+      for (size_t j = 0; j < n; j++) {
+        if (i != j) {
+          soma += A[i][j] * x[j];
+        }
+      }
+
+      x[i] = (b[i] - soma) / A[i][i];
+    }
+
+    bool convergiu = distancia_relativa(x, x_old, 1e-6) ||
+                     distancia_absoluta(x, x_old, 1e-6);
+
+    if (convergiu) {
+      break;
+    }
+  }
+
+  return Resultado{.x = x, .iteracoes = contador};
 }
+} // namespace gauss_seidel

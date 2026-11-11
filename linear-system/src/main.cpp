@@ -7,6 +7,14 @@
 
 using namespace std;
 
+void print_vetor(const Vetor &v) {
+  std::cout << "[";
+  for (size_t i = 0; i < v.size(); i++) {
+    std::cout << " " << v[i];
+  }
+  std::cout << "]\n";
+}
+
 int main(int argc, char **argv) {
   if (argc != 4) {
     cerr << "uso: " << argv[0] << " <matriz.mtx> <vetor.b> <metodo>\n";
@@ -34,7 +42,7 @@ int main(int argc, char **argv) {
     } else if (metodo == "gauss_jacobi") {
       resultado = gauss_jacobi::metodo(A, b);
     } else if (metodo == "gauss_seidel") {
-      resultado = gauss_seidel(A, b);
+      resultado = gauss_seidel::metodo(A, b);
     } else {
       cerr << "metodo invalido: " << metodo << '\n';
       return 1;
@@ -43,6 +51,8 @@ int main(int argc, char **argv) {
     cerr << "erro: " << erro.what() << '\n';
     return 1;
   }
+
+  print_vetor(resultado.x);
 
   const auto fim = chrono::steady_clock::now();
   const double tempo = chrono::duration<double, milli>(fim - inicio).count();
