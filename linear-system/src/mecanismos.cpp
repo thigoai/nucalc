@@ -1,5 +1,6 @@
 #include "../include/model.hpp"
 #include <cmath>
+#include <cstdlib>
 
 Vetor retrosubstituicao(const Matriz &A, const Vetor &b, size_t &count) {
   size_t n = b.size();
@@ -57,4 +58,40 @@ double calcular_residuo(const Matriz &A, const Vetor &b, const Vetor &x) {
   }
 
   return maior;
+}
+
+bool distancia_relativa(const Vetor &x, const Vetor &xx, double EPSILON) {
+  double max_delta = 0;
+  double max_xx = 0;
+
+  for (size_t i = 0; i < x.size(); i++) {
+    double delta = std::abs(xx[i] - x[i]);
+    if (delta > max_delta) {
+      max_delta = delta;
+    }
+
+    double abs_xx = std::abs(xx[i]);
+
+    if (xx[i] > max_xx) {
+      max_xx = xx[i];
+    }
+  }
+
+  if (max_xx == 0)
+    return max_delta < EPSILON;
+
+  return max_delta / max_xx < EPSILON;
+}
+
+bool distancia_absoluta(const Vetor &x, const Vetor &xx, double EPSILON) {
+  double max_delta = 0;
+
+  for (size_t i = 0; i < x.size(); i++) {
+    double delta = std::abs(xx[i] - x[i]);
+    if (delta > max_delta) {
+      max_delta = delta;
+    }
+  }
+
+  return max_delta < EPSILON;
 }
