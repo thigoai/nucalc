@@ -2,6 +2,18 @@
 #include <algorithm>
 #include <cmath>
 
+/*
+ * Pseudocódigo — Retrosubstituição (resolve U x = b)
+ *
+ * Entrada: A (triangular superior, n×n), b (n)
+ * Saída:   x (n)
+ *
+ * x[n − 1] ← b[n − 1] / A[n − 1][n − 1]
+ * para i = n − 2 até 0 (decrementando):
+ *     s ← Σ_{j=i+1}^{n−1} A[i][j] · x[j]
+ *     x[i] ← (b[i] − s) / A[i][i]
+ * retorna x
+ */
 Vetor retrosubstituicao(const Matriz &A, const Vetor &b) {
   size_t n = b.size();
   Vetor x(n);
@@ -21,6 +33,17 @@ Vetor retrosubstituicao(const Matriz &A, const Vetor &b) {
   return x;
 }
 
+/*
+ * Pseudocódigo — Prosubstituição (resolve L y = b)
+ *
+ * Entrada: L (triangular inferior, n×n), b (n)
+ * Saída:   y (n)
+ *
+ * para i = 0 até n − 1:
+ *     s ← Σ_{j=0}^{i−1} L[i][j] · y[j]
+ *     y[i] ← (b[i] − s) / L[i][i]
+ * retorna y
+ */
 Vetor prosubstituicao(const Matriz &L, const Vetor &b) {
   size_t n = b.size();
   Vetor y(n);
@@ -38,6 +61,17 @@ Vetor prosubstituicao(const Matriz &L, const Vetor &b) {
   return y;
 }
 
+/*
+ * Pseudocódigo — Norma infinito
+ *
+ * Entrada: v (n)
+ * Saída:   ‖v‖∞ = max_i |v[i]|
+ *
+ * maior ← 0
+ * para cada valor em v:
+ *     se |valor| > maior: maior ← |valor|
+ * retorna maior
+ */
 double norma_infinito(const Vetor &v) {
   double maior = 0.0;
 
@@ -51,7 +85,17 @@ double norma_infinito(const Vetor &v) {
   return maior;
 }
 
-// Vetor residuo r = b - A*x.
+/*
+ * Pseudocódigo — Resíduo r = b − A x
+ *
+ * Entrada: A (n×n), b (n), x (n)
+ * Saída:   r (n)
+ *
+ * para i = 0 até n − 1:
+ *     s ← Σ_j A[i][j] · x[j]
+ *     r[i] ← b[i] − s
+ * retorna r
+ */
 Vetor calcular_residuo(const Matriz &A, const Vetor &b, const Vetor &x) {
   size_t n = b.size();
   Vetor residuo(n);
@@ -69,8 +113,24 @@ Vetor calcular_residuo(const Matriz &A, const Vetor &b, const Vetor &x) {
   return residuo;
 }
 
-// Critério de parada: distância absoluta E distância relativa abaixo da
-// tolerância.
+/*
+ * Pseudocódigo — Critério de parada
+ *
+ * Entrada: anterior (n), x (n), TOLERANCIA
+ * Saída:   Status
+ *
+ * delta ← 0; norma_anterior ← 0; norma_x ← 0
+ * para i = 0 até n − 1:
+ *     se x[i] não é finito: retorna Divergiu
+ *     delta ← max(delta, |x[i] − anterior[i]|)
+ *     norma_anterior ← max(norma_anterior, |anterior[i]|)
+ *     norma_x ← max(norma_x, |x[i]|)
+ *
+ * escala ← max(norma_anterior, norma_x)
+ * absoluta ← delta < TOLERANCIA
+ * relativa ← escala > 0 e delta / escala < TOLERANCIA
+ * retorna Convergiu se absoluta e relativa, senão Continuar
+ */
 Status criterio_parada(const Vetor &anterior, const Vetor &x) {
   double delta = 0.0;
   double norma_anterior = 0.0;
