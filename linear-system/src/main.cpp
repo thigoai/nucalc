@@ -8,11 +8,11 @@
 using namespace std;
 
 void print_vetor(const Vetor &v) {
-  std::cout << "[";
-  for (size_t i = 0; i < v.size(); i++) {
-    std::cout << " " << v[i];
+  cout << "[";
+  for (double valor : v) {
+    cout << " " << valor;
   }
-  std::cout << "]\n";
+  cout << "]\n";
 }
 
 int main(int argc, char **argv) {
@@ -28,8 +28,8 @@ int main(int argc, char **argv) {
   Matriz A = ler_matrix(arquivo_mtx);
   Vetor b = ler_b(arquivo_b, static_cast<int>(A.size()));
 
-  Matriz A_original = A;
-  Vetor b_original = b;
+  const Matriz A_original = A;
+  const Vetor b_original = b;
 
   Resultado resultado;
   const auto inicio = chrono::steady_clock::now();
@@ -52,29 +52,33 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  print_vetor(resultado.x);
-
   const auto fim = chrono::steady_clock::now();
-  const double tempo = chrono::duration<double, milli>(fim - inicio).count();
-  const double residuo = calcular_residuo(A_original, b_original, resultado.x);
+  const double tempo_ms = chrono::duration<double, milli>(fim - inicio).count();
+
+  const Vetor residuo = calcular_residuo(A_original, b_original, resultado.x);
 
   Metricas m;
   m.arquivo_mtx = arquivo_mtx;
   m.arquivo_b = arquivo_b;
   m.metodo = metodo;
-  m.tempo = tempo;
+  m.n = A_original.size();
+  m.tempo_ms = tempo_ms;
   m.iteracoes = resultado.iteracoes;
-  m.residuo = residuo;
-  m.convergiu = residuo <= TOLERANCIA;
+  m.residuo = norma_infinito(residuo);
+  m.convergiu = resultado.status == Status::Convergiu;
+  m.status = nome_status(resultado.status);
 
   salvar_metricas(m);
 
-  cout << "n: " << A.size() << '\n';
+  cout << "n: " << m.n << '\n';
   cout << "metodo: " << metodo << '\n';
-  cout << "tempo: " << tempo << " ms\n";
-  cout << "iteracoes: " << resultado.iteracoes << '\n';
-  cout << "residuo: " << residuo << '\n';
+  cout << "tempo: " << m.tempo_ms << " ms\n";
+  cout << "iteracoes: " << m.iteracoes << '\n';
+  cout << "residuo: " << m.residuo << '\n';
   cout << "convergiu: " << (m.convergiu ? "sim" : "nao") << '\n';
+  cout << "status: " << m.status << '\n';
+
+  print_vetor(resultado.x);
 
   return 0;
 }

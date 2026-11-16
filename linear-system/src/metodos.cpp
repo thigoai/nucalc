@@ -1,6 +1,5 @@
 #include "./mecanismos.cpp"
 #include <cstddef>
-#include <iostream>
 #include <stdexcept>
 #include <vector>
 
@@ -12,9 +11,6 @@ namespace eliminacao_gauss {
 
 void pivoteamento(Matriz &A, Vetor &b, size_t i) {
   size_t n = b.size();
-
-  double pivo = A[i][i];
-
   size_t p = i;
 
   for (size_t k = i + 1; k < n; k++) {
@@ -33,52 +29,43 @@ void pivoteamento(Matriz &A, Vetor &b, size_t i) {
   }
 }
 
-void atualiza_linha(Matriz &A, Vetor &b, size_t from, size_t to, size_t &count,
+void atualiza_linha(Matriz &A, Vetor &b, size_t from, size_t to,
                     double multiplicador) {
   for (size_t i = 0; i < b.size(); i++) {
-    count++;
     A[to][i] = atualiza_celula(A[to][i], A[from][i], multiplicador);
   }
 
-  count++;
   b[to] = atualiza_celula(b[to], b[from], multiplicador);
 }
 
-void escalonamento(Matriz &A, Vetor &b, size_t &count) {
+void escalonamento(Matriz &A, Vetor &b) {
   size_t n = b.size();
 
   for (size_t i = 0; i < n - 1; i++) {
     pivoteamento(A, b, i);
     double pivo = A[i][i];
 
-    for (int j = i + 1; j < n; j++) {
+    for (size_t j = i + 1; j < n; j++) {
       double multiplicador = A[j][i] / pivo;
-
-      atualiza_linha(A, b, i, j, count, multiplicador);
+      atualiza_linha(A, b, i, j, multiplicador);
     }
   }
 }
 
 Resultado metodo(Matriz &A, Vetor &b) {
   size_t n = b.size();
-  size_t count = 0;
 
-  escalonamento(A, b, count);
+  escalonamento(A, b);
 
-  Vetor x = retrosubstituicao(A, b, count);
-
-  return Resultado{
-      .x = x,
-      .iteracoes = count,
-  };
+  return {retrosubstituicao(A, b), n - 1, Status::Convergiu};
 }
+
 } // namespace eliminacao_gauss
 
 namespace fatoracao_lu {
 
 void pivoteamento(Matriz &U, Matriz &L, Vetor &b, size_t i) {
   size_t n = b.size();
-
   size_t p = i;
 
   for (size_t k = i + 1; k < n; k++) {
@@ -102,52 +89,43 @@ void pivoteamento(Matriz &U, Matriz &L, Vetor &b, size_t i) {
   }
 }
 
-void atualiza_linha(Matriz &A, size_t from, size_t to, size_t &count,
-                    double multiplicador) {
-  count += A.size();
+void atualiza_linha(Matriz &A, size_t from, size_t to, double multiplicador) {
   for (size_t i = 0; i < A.size(); i++) {
     A[to][i] = atualiza_celula(A[to][i], A[from][i], multiplicador);
   }
 }
 
-void fatoracao(Matriz &L, Matriz &U, Vetor &b, size_t &count) {
+void fatoracao(Matriz &L, Matriz &U, Vetor &b) {
   size_t n = b.size();
 
   for (size_t i = 0; i < n - 1; i++) {
     pivoteamento(U, L, b, i);
     double pivo = U[i][i];
-    for (int j = i + 1; j < n; j++) {
+
+    for (size_t j = i + 1; j < n; j++) {
       double multiplicador = U[j][i] / pivo;
-
       L[j][i] = multiplicador;
-
-      atualiza_linha(U, i, j, count, multiplicador);
+      atualiza_linha(U, i, j, multiplicador);
     }
   }
 }
 
 void inicializar_diagonal_de_l(Matriz &L) {
-  size_t n = L.size();
-  for (size_t i = 0; i < n; i++) {
+  for (size_t i = 0; i < L.size(); i++) {
     L[i][i] = 1.0;
   }
 }
 
 Resultado metodo(Matriz &U, Vetor &b) {
   size_t n = b.size();
-  size_t count = 0;
 
   Matriz L(n, std::vector<double>(n, 0.0));
   inicializar_diagonal_de_l(L);
 
-  fatoracao(L, U, b, count);
-  Vetor y = prosubstituicao(L, b, count);
-  Vetor x = retrosubstituicao(U, y, count);
+  fatoracao(L, U, b);
+  Vetor y = prosubstituicao(L, b);
 
-  return Resultado{
-      .x = x,
-      .iteracoes = count,
-  };
+  return {retrosubstituicao(U, y), n - 1, Status::Convergiu};
 }
 
 } // namespace fatoracao_lu
@@ -157,37 +135,33 @@ namespace gauss_jacobi {
 Resultado metodo(const Matriz &A, const Vetor &b) {
   size_t n = b.size();
 
-  Vetor x = std::vector<double>(n, 0);
-  Vetor y = std::vector<double>(n, 10);
+  Vetor x(n, 0.0);
+  Vetor y(n, 0.0);
 
-  size_t contador = 0;
-
-  while (true) {
-    contador++;
-
+  for (size_t iteracao = 1; iteracao <= MAX_ITERACOES; iteracao++) {
     for (size_t i = 0; i < n; i++) {
-      y[i] = 0;
+      double soma = 0.0;
+
       for (size_t j = 0; j < n; j++) {
         if (i != j) {
-          y[i] += A[i][j] * x[j];
+          soma += A[i][j] * x[j];
         }
       }
 
-      y[i] = (b[i] - y[i]) / A[i][i];
+      y[i] = (b[i] - soma) / A[i][i];
     }
 
-    bool convergiu =
-        distancia_relativa(x, y, 1e-6) || distancia_absoluta(x, y, 1e-6);
-
+    const Status status = criterio_parada(x, y);
     x = y;
 
-    if (convergiu) {
-      break;
+    if (status != Status::Continuar) {
+      return {x, iteracao, status};
     }
   }
 
-  return Resultado{.x = x, .iteracoes = contador};
+  return {x, MAX_ITERACOES, Status::MaxIteracoes};
 }
+
 } // namespace gauss_jacobi
 
 namespace gauss_seidel {
@@ -195,22 +169,14 @@ namespace gauss_seidel {
 Resultado metodo(const Matriz &A, const Vetor &b) {
   size_t n = b.size();
 
-  Vetor x = std::vector<double>(n, 1);
-  Vetor xx = std::vector<double>(n);
+  Vetor x(n, 0.0);
 
-  if (!teste_diagonal(A)) {
-    return Resultado{.x = x, .iteracoes = 0};
-  }
-
-  size_t contador = 0;
-
-  while (true) {
-    contador++;
-
-    Vetor x_old = x;
+  for (size_t iteracao = 1; iteracao <= MAX_ITERACOES; iteracao++) {
+    const Vetor anterior = x;
 
     for (size_t i = 0; i < n; i++) {
-      double soma = 0;
+      double soma = 0.0;
+
       for (size_t j = 0; j < n; j++) {
         if (i != j) {
           soma += A[i][j] * x[j];
@@ -220,14 +186,14 @@ Resultado metodo(const Matriz &A, const Vetor &b) {
       x[i] = (b[i] - soma) / A[i][i];
     }
 
-    bool convergiu = distancia_relativa(x, x_old, 1e-6) ||
-                     distancia_absoluta(x, x_old, 1e-6);
+    const Status status = criterio_parada(anterior, x);
 
-    if (convergiu) {
-      break;
+    if (status != Status::Continuar) {
+      return {x, iteracao, status};
     }
   }
 
-  return Resultado{.x = x, .iteracoes = contador};
+  return {x, MAX_ITERACOES, Status::MaxIteracoes};
 }
+
 } // namespace gauss_seidel

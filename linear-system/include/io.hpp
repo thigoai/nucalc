@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
@@ -7,10 +8,12 @@ struct Metricas {
   std::string arquivo_mtx;
   std::string arquivo_b;
   std::string metodo;
-  double tempo = 0.0;
+  size_t n = 0;
+  double tempo_ms = 0.0;
   size_t iteracoes = 0;
   double residuo = 0.0;
   bool convergiu = false;
+  std::string status;
 };
 
 std::vector<std::vector<double>> ler_matrix(const std::string &nome);

@@ -1,5 +1,4 @@
 #include "../include/io.hpp"
-#include <cstdio>
 #include <cstdlib>
 #include <fstream>
 #include <iomanip>
@@ -43,10 +42,13 @@ vector<vector<double>> ler_matrix(const string &nome) {
     double valor = 0.0;
 
     arquivo >> i >> j >> valor;
-    A[i - 1][j - 1] += valor;
+    --i;
+    --j;
+
+    A[i][j] += valor;
 
     if (i != j) {
-      A[j - 1][i - 1] += valor;
+      A[j][i] += valor;
     }
   }
 
@@ -92,11 +94,13 @@ void salvar_metricas(const Metricas &m) {
   const bool novo = !teste.good() || teste.peek() == EOF;
 
   ofstream csv("metricas.csv", ios::app);
+
   if (novo) {
-    csv << "arquivo_mtx,arquivo_b,metodo,tempo,iteracoes,residuo,convergiu\n";
+    csv << "arquivo_mtx,arquivo_b,metodo,n,tempo_ms,iteracoes,residuo,"
+           "convergiu,status\n";
   }
 
-  csv << m.arquivo_mtx << ',' << m.arquivo_b << ',' << m.metodo << ','
-      << setprecision(10) << m.tempo << ',' << m.iteracoes << ',' << m.residuo
-      << ',' << (m.convergiu ? 1 : 0) << '\n';
+  csv << m.arquivo_mtx << ',' << m.arquivo_b << ',' << m.metodo << ',' << m.n
+      << ',' << setprecision(10) << m.tempo_ms << ',' << m.iteracoes << ','
+      << m.residuo << ',' << (m.convergiu ? 1 : 0) << ',' << m.status << '\n';
 }

@@ -1,31 +1,27 @@
 #include "../include/model.hpp"
+#include <algorithm>
 #include <cmath>
-#include <cstdlib>
 
-Vetor retrosubstituicao(const Matriz &A, const Vetor &b, size_t &count) {
+Vetor retrosubstituicao(const Matriz &A, const Vetor &b) {
   size_t n = b.size();
-
   Vetor x(n);
 
-  count++;
   x[n - 1] = b[n - 1] / A[n - 1][n - 1];
 
   for (size_t i = n - 1; i-- > 0;) {
     double somatorio = 0.0;
 
     for (size_t j = i + 1; j < n; j++) {
-      count++;
       somatorio += A[i][j] * x[j];
     }
 
-    count++;
     x[i] = (b[i] - somatorio) / A[i][i];
   }
 
   return x;
 }
 
-Vetor prosubstituicao(const Matriz &L, const Vetor &b, size_t &count) {
+Vetor prosubstituicao(const Matriz &L, const Vetor &b) {
   size_t n = b.size();
   Vetor y(n);
 
@@ -33,86 +29,66 @@ Vetor prosubstituicao(const Matriz &L, const Vetor &b, size_t &count) {
     double soma = 0.0;
 
     for (size_t j = 0; j < i; j++) {
-      count++;
       soma += L[i][j] * y[j];
     }
 
-    count++;
     y[i] = (b[i] - soma) / L[i][i];
   }
 
   return y;
 }
-double calcular_residuo(const Matriz &A, const Vetor &b, const Vetor &x) {
-  const int n = static_cast<int>(A.size());
+
+double norma_infinito(const Vetor &v) {
   double maior = 0.0;
 
-  for (int i = 0; i < n; ++i) {
-    double soma = 0.0;
-
-    for (int j = 0; j < n; ++j) {
-      soma += A[i][j] * x[j];
+  for (double valor : v) {
+    const double absoluto = std::fabs(valor);
+    if (!(absoluto <= maior)) { // NaN se propaga
+      maior = absoluto;
     }
-
-    maior = std::max(maior, std::fabs(soma - b[i]));
   }
 
   return maior;
 }
 
-bool distancia_relativa(const Vetor &x, const Vetor &xx, double EPSILON) {
-  double max_delta = 0;
-  double max_xx = 0;
-
-  for (size_t i = 0; i < x.size(); i++) {
-    double delta = std::abs(xx[i] - x[i]);
-    if (delta > max_delta) {
-      max_delta = delta;
-    }
-
-    double abs_xx = std::abs(xx[i]);
-
-    if (abs_xx > max_xx) {
-      max_xx = abs_xx;
-    }
-  }
-
-  if (max_xx == 0)
-    return max_delta < EPSILON;
-
-  return max_delta / max_xx < EPSILON;
-}
-
-bool distancia_absoluta(const Vetor &x, const Vetor &xx, double EPSILON) {
-  double max_delta = 0;
-
-  for (size_t i = 0; i < x.size(); i++) {
-    double delta = std::abs(xx[i] - x[i]);
-    if (delta > max_delta) {
-      max_delta = delta;
-    }
-  }
-
-  return max_delta < EPSILON;
-}
-
-bool teste_diagonal(const Matriz &A) {
-  const size_t n = A.size();
-  bool linha_ok = true, coluna_ok = true;
+// Vetor residuo r = b - A*x.
+Vetor calcular_residuo(const Matriz &A, const Vetor &b, const Vetor &x) {
+  size_t n = b.size();
+  Vetor residuo(n);
 
   for (size_t i = 0; i < n; i++) {
-    double soma_linha = 0, soma_coluna = 0;
+    double soma = 0.0;
+
     for (size_t j = 0; j < n; j++) {
-      if (i != j) {
-        soma_linha += std::abs(A[i][j]);
-        soma_coluna += std::abs(A[j][i]);
-      }
+      soma += A[i][j] * x[j];
     }
-    if (soma_linha >= std::abs(A[i][i]))
-      linha_ok = false;
-    if (soma_coluna >= std::abs(A[i][i]))
-      coluna_ok = false;
+
+    residuo[i] = b[i] - soma;
   }
 
-  return linha_ok || coluna_ok;
+  return residuo;
+}
+
+// Critério de parada: distância absoluta E distância relativa abaixo da
+// tolerância.
+Status criterio_parada(const Vetor &anterior, const Vetor &x) {
+  double delta = 0.0;
+  double norma_anterior = 0.0;
+  double norma_x = 0.0;
+
+  for (size_t i = 0; i < x.size(); i++) {
+    if (!std::isfinite(x[i])) {
+      return Status::Divergiu;
+    }
+
+    delta = std::max(delta, std::fabs(x[i] - anterior[i]));
+    norma_anterior = std::max(norma_anterior, std::fabs(anterior[i]));
+    norma_x = std::max(norma_x, std::fabs(x[i]));
+  }
+
+  const double escala = std::max(norma_anterior, norma_x);
+  const bool absoluta = delta < TOLERANCIA;
+  const bool relativa = escala > 0.0 && delta / escala < TOLERANCIA;
+
+  return (absoluta && relativa) ? Status::Convergiu : Status::Continuar;
 }
