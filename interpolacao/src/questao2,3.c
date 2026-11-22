@@ -47,13 +47,14 @@ void imprimir_linha_metrica(int indice, struct Metricas met) {
   }
 }
 
-int main(int argc, char **argv) {
-  /*
+/* =========================================================================================================================
     2.3. Utilizando a interpolação via solução do sistema linear,  interpole a função f(x) = 1/(1+25x2), em 
     pontos igualmente espaçados entre x=0 e x=4, com (a) n= 4; (b) n = 10; (c) n = 15. Compare 
     os resultados obtidos com a função original. (obs. n é o grau do polinômio interpolador).
-  */
+========================================================================================================================= */
 
+
+int main(int argc, char **argv) {
   // Definindo critérios de interpolação
   const int graus[] = {4, 10, 15};
   const int num_graus = sizeof(graus) / sizeof(graus[0]);
