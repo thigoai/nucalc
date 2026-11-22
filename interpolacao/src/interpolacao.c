@@ -1,5 +1,6 @@
 #include "../include/interpolacao.h"
 #include "../include/linear_system.h"
+#include "../include/newton.h"
 #include <math.h>
 
 // Pega dois pontos e gera os intervalos espaçados igualmente entre eles 
@@ -27,14 +28,14 @@ double avaliar_polinomio(const double coeficientes[], int grau, double x) {
 // Os diferentes métodos implementados 
 MetodoInterpolacao metodos_interpolacao[] = {
     interpolacao_sistema_linear,
-    /* interpolacao_lagrange, */        /* TODO */
-    /* interpolacao_diferencas_divididas, */ /* TODO */
+    /* interpolacao_lagrange, */ /* TODO */
+    interpolacao_diferencas_divididas,
 };
 
 const char *nomes_metodos_interpolacao[] = {
     "Sistema Linear",
     // Lagrange
-    // Diferenças divididas
+    "Diferencas divididas",
 };
 
 const int num_metodos_interpolacao =
