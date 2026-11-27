@@ -1,4 +1,5 @@
 #include "../include/interpolacao.h"
+#include "../include/lagrange.h"
 #include "../include/linear_system.h"
 #include "../include/newton.h"
 #include <math.h>
@@ -28,13 +29,13 @@ double avaliar_polinomio(const double coeficientes[], int grau, double x) {
 // Os diferentes métodos implementados 
 MetodoInterpolacao metodos_interpolacao[] = {
     interpolacao_sistema_linear,
-    /* interpolacao_lagrange, */ /* TODO */
+    interpolacao_lagrange,
     interpolacao_diferencas_divididas,
 };
 
 const char *nomes_metodos_interpolacao[] = {
     "Sistema Linear",
-    // Lagrange
+    "Lagrange",
     "Diferencas divididas",
 };
 

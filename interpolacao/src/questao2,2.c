@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../algoritmos-de-interpolacao/lagrange.c"
 #include "../algoritmos-de-interpolacao/linear-system.c"
 #include "../algoritmos-de-interpolacao/newton.c"
 #include "funcoes.c"
